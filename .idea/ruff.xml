@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RuffConfigService">
+    <option name="globalRuffExecutablePath" value="$USER_HOME$/system_venv/bin/ruff" />
+    <option name="ruffConfigPath" value="$USER_HOME$/ft/repos/data-platform-airflow/pyproject.toml" />
+    <option name="useRuffFormat" value="true" />
+    <option name="useRuffServer" value="true" />
+  </component>
+</project>

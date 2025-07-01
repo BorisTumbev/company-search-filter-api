@@ -1,0 +1,115 @@
+[
+  {
+    "model": "company.company",
+    "pk": 1,
+    "fields": {
+      "name": "Alpha Corp",
+      "country": "USA",
+      "industry": "Tech",
+      "founded_year": 1999
+    }
+  },
+  {
+    "model": "company.company",
+    "pk": 2,
+    "fields": {
+      "name": "Beta Group",
+      "country": "Germany",
+      "industry": "Finance",
+      "founded_year": 1985
+    }
+  },
+  {
+    "model": "company.company",
+    "pk": 3,
+    "fields": {
+      "name": "Gamma Inc",
+      "country": "UK",
+      "industry": "Tech",
+      "founded_year": 2005
+    }
+  },
+  {
+    "model": "company.companydetails",
+    "pk": 1,
+    "fields": {
+      "company": 1,
+      "company_type": "Public",
+      "size": "Large",
+      "ceo_name": "Alice",
+      "headquarters": "New York"
+    }
+  },
+  {
+    "model": "company.companydetails",
+    "pk": 2,
+    "fields": {
+      "company": 2,
+      "company_type": "Private",
+      "size": "Medium",
+      "ceo_name": "Bob",
+      "headquarters": "Berlin"
+    }
+  },
+  {
+    "model": "company.companydetails",
+    "pk": 3,
+    "fields": {
+      "company": 3,
+      "company_type": "Public",
+      "size": "Small",
+      "ceo_name": "Carol",
+      "headquarters": "London"
+    }
+  },
+  {
+    "model": "company.financialdata",
+    "pk": 1,
+    "fields": {
+      "company": 1,
+      "year": 2022,
+      "revenue": 7500000,
+      "net_income": 1200000
+    }
+  },
+  {
+    "model": "company.financialdata",
+    "pk": 2,
+    "fields": {
+      "company": 1,
+      "year": 2023,
+      "revenue": 8200000,
+      "net_income": 1500000
+    }
+  },
+  {
+    "model": "company.financialdata",
+    "pk": 3,
+    "fields": {
+      "company": 2,
+      "year": 2022,
+      "revenue": 3000000,
+      "net_income": 500000
+    }
+  },
+  {
+    "model": "company.financialdata",
+    "pk": 4,
+    "fields": {
+      "company": 3,
+      "year": 2022,
+      "revenue": 900000,
+      "net_income": 250000
+    }
+  },
+  {
+    "model": "company.financialdata",
+    "pk": 5,
+    "fields": {
+      "company": 3,
+      "year": 2023,
+      "revenue": 1050000,
+      "net_income": 300000
+    }
+  }
+]

@@ -1,9 +1,6 @@
-from django.urls import path, include
-# from rest_framework.routers import DefaultRouter
-# from .views import CompanyViewSet
-
-# router = DefaultRouter()
-# router.register(r'companies', CompanyViewSet)
+from .api import CompanyApi
+from django.urls import path
 
 urlpatterns = [
+    path('companies/', CompanyApi.as_view(), name='company'),
 ]
