@@ -18,10 +18,15 @@ class CompanyApi(GenericAPIView):
     def get_queryset(self):
         raw_search = self.request.query_params.get('search')
         sort_param = self.request.query_params.get('sort')
+        filter_param = self.request.query_params.get('filter')
+
         sort_fields = [f.strip() for f in sort_param.split(',') if f.strip()] if sort_param else []
         companies = Company.objects.all_with_related()
+
         if raw_search:
             companies = companies.search(raw_search)
+        if filter_param:
+            companies = companies.filter(filter_param)
         if sort_fields:
             companies = companies.sort(sort_fields)
         return companies

@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from typing import Any
 
-from .common import get_all_related_field_values, get_nested_field_generic
+from .common.fields import get_all_related_field_values, get_nested_field_generic
 
 
 def merge_sort(

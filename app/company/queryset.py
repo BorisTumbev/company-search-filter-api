@@ -1,6 +1,9 @@
 from typing import Any
-from .utils.searching import apply_search, parse_search_query
-from .utils.sorting import merge_sort, create_sort_key
+
+from .utils.common.parsing import parse_query
+from .utils.filtering import apply_filter
+from .utils.searching import apply_search
+from .utils.sorting import create_sort_key, merge_sort
 
 
 class SearchQuerySet:
@@ -20,7 +23,7 @@ class SearchQuerySet:
         return self._data
 
     def search(self, raw_query: str):
-        conditions = parse_search_query(raw_query)
+        conditions = parse_query(raw_query)
         filtered = apply_search(self._data, conditions)
         return SearchQuerySet(filtered)
 
@@ -28,3 +31,7 @@ class SearchQuerySet:
         sort_key = create_sort_key(sort_fields)
         sorted_data = merge_sort(self._data, key=sort_key)
         return SearchQuerySet(sorted_data)
+
+    def filter(self, raw_query: str):
+        filtered = apply_filter(self._data, raw_query)
+        return SearchQuerySet(filtered)

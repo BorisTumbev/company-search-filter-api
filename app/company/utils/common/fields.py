@@ -3,25 +3,6 @@ from typing import Any
 from django.db.models import Model
 
 
-def get_nested_field(obj: Any, field: str) -> Any:
-    """
-    Gets a potentially nested attribute value from an object.
-
-    Args:
-        obj: The object to extract the value from.
-        field: Field name, possibly using dot notation (e.g., 'details__size').
-
-    Returns:
-        The attribute value or None if not found.
-    """
-    parts = field.split('__')
-    for part in parts:
-        if obj is None:
-            return None
-        obj = getattr(obj, part, None)
-    return obj
-
-
 def get_all_related_field_values(obj: Any, field: str) -> list | None:
     """
     Robustly searches ALL related fields (reverse & forward relationships).
