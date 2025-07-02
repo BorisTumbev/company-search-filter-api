@@ -1,3 +1,4 @@
+import hashlib
 from typing import Any
 
 from django.db.models import Model
@@ -79,3 +80,11 @@ def try_cast(val: str) -> Any:
         return int(val)
     except ValueError:
         return val  # fallback: keep as string
+
+
+def get_cache_key_from_request(request):
+    # Include path and query string (sorted for consistency)
+    path = request.path
+    params = '&'.join(f'{k}={v}' for k, v in sorted(request.GET.items()))
+    raw_key = f'{path}?{params}'
+    return str(hashlib.md5(raw_key.encode()).hexdigest())

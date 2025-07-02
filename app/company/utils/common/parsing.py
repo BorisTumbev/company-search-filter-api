@@ -18,6 +18,7 @@ OPS = {
     'AND': operator.and_,
     'OR': operator.or_,
 }
+FILTER_PATTERN = re.compile(r'(?P<field>\w+)(?P<op>>=|<=|:|>|<|=)(?P<value>.+)')
 
 
 def match(obj: Any, cond: dict) -> bool:
@@ -54,9 +55,6 @@ def _compare(attr: Any, op: str, val: Any) -> bool:
     if op in OPS and isinstance(attr, (int, float)) and isinstance(val, (int, float)):
         return OPS[op](attr, val)
     return False
-
-
-FILTER_PATTERN = re.compile(r'(?P<field>\w+)(?P<op>>=|<=|:|>|<|=)(?P<value>.+)')
 
 
 def parse_query(raw_query: str) -> list[dict]:

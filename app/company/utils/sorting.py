@@ -87,7 +87,6 @@ def create_sort_key(sort_fields: list[str]) -> Callable[[Any], tuple]:
 
             # First try direct/nested fields
             value = get_nested_field_generic(obj, actual_field)
-            print(value)
             if value is None:
                 # Check reverse-related fields dynamically
                 related_values = get_all_related_field_values(obj, actual_field)
