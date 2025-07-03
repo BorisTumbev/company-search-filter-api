@@ -1,4 +1,5 @@
 import re
+from typing import Any
 
 from .common.parsing import OPS, match, parse_query
 
@@ -8,7 +9,7 @@ CONDITION_PATTERN = re.compile(
 )
 
 
-def extract_conditions(filter_string):
+def extract_conditions(filter_string: str) -> list[str]:
     """
     Extracts field-operator-value expressions, handling quoted values and spaces.
 
@@ -34,7 +35,7 @@ def extract_conditions(filter_string):
     return matches
 
 
-def parse_filter_expression(raw_query: str):
+def parse_filter_expression(raw_query: str) -> list[str]:
     """
     Parses a filter string with AND/OR to a flat structure:
     E.g., 'A AND B OR C' -> ['A', 'AND', 'B', 'OR', 'C']
@@ -61,13 +62,13 @@ def parse_filter_expression(raw_query: str):
     return tokens
 
 
-def strip_quotes(val):
+def strip_quotes(val: str) -> str:
     if isinstance(val, str) and val.startswith('"') and val.endswith('"'):
         return val[1:-1]
     return val
 
 
-def tokens_to_conditions(tokens):
+def tokens_to_conditions(tokens: list[str]) -> list:
     """
     Converts a list of tokens (conditions and AND/OR) to a structured expression like:
     ['industry:Tech', 'AND', 'revenue>500000'] ->
@@ -86,7 +87,7 @@ def tokens_to_conditions(tokens):
     return result
 
 
-def evaluate_filter(obj, expr):
+def evaluate_filter(obj: Any, expr: list) -> bool:
     """
     Evaluates an expression list like:
     [cond1, 'AND', cond2, 'OR', cond3] for an object.

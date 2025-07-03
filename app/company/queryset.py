@@ -26,7 +26,7 @@ class SearchQuerySet:
         for i in range(0, len(self._data), chunk_size):
             yield self._data[i : i + chunk_size]
 
-    def search(self, raw_query: str):
+    def search(self, raw_query: str) -> 'SearchQuerySet':
         conditions = parse_query(raw_query)
         filtered = apply_search(self._data, conditions)
         return SearchQuerySet(filtered)
@@ -37,13 +37,13 @@ class SearchQuerySet:
             filtered = apply_search(chunk, conditions)
             yield SearchQuerySet(filtered)
 
-    def sort(self, sort_param: str):
+    def sort(self, sort_param: str) -> 'SearchQuerySet':
         sort_fields = [f.strip() for f in sort_param.split(',') if f.strip()] if sort_param else []
         sort_key = create_sort_key(sort_fields)
         sorted_data = merge_sort(self._data, key=sort_key)
         return SearchQuerySet(sorted_data)
 
-    def filter(self, raw_query: str):
+    def filter(self, raw_query: str) -> 'SearchQuerySet':
         filtered = apply_filter(self._data, raw_query)
         return SearchQuerySet(filtered)
 

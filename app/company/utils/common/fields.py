@@ -82,7 +82,7 @@ def try_cast(val: str) -> Any:
         return val  # fallback: keep as string
 
 
-def get_cache_key_from_request(request):
+def get_cache_key_from_request(request: Any) -> str:
     # Include path and query string (sorted for consistency)
     path = request.path
     params = '&'.join(f'{k}={v}' for k, v in sorted(request.GET.items()))
