@@ -16,6 +16,7 @@ A scalable Django REST API for searching, filtering, and sorting company-related
 2. **Copy environment variables**
 
     ```bash
+    # populate them with your local settings
     cp .env.example .env
     ```
 
@@ -47,6 +48,23 @@ A scalable Django REST API for searching, filtering, and sorting company-related
 
 ---
 
+## 🔎 How Searching Works
+
+- **Free-form search** via the `search` query parameter:  
+  - e.g. `?search=industry:Tech country:Ger`
+- **Supports:**
+  - Text fields (substring or exact match)
+  - Numeric fields and comparisons (>, <, >=, <=)
+  - Nested and related fields (`details__ceo_name:Alice`)
+  - Multiple search criteria combined with AND (all must match)
+  - Quoted values for multi-word search (e.g. `name="Beta Group"`)
+- **Implementation:**  
+  - Parses the `search` string into conditions using regex and custom parsing logic.
+  - Each company is checked for all search conditions using a custom `match()` function.
+  - All filtering is done in pure Python — no Django ORM `.filter()`!
+
+---
+
 ## 🧠 How Filtering and Sorting Work
 
 ### **Custom Filtering**
@@ -66,24 +84,29 @@ A scalable Django REST API for searching, filtering, and sorting company-related
 
 ---
 
-## 🧩 Algorithm Choices Explained
+## 🧩 Algorithm Choices & Complexity
 
-- **Filtering:**  
-  Iterates through in-memory company objects. Each object is matched against all filter conditions using custom field/nested attribute access logic and a safe comparison map (never using `eval`). Supports AND/OR and quoted multi-word values.
-
+- **Searching/Filtering:**  
+  - Iterates through all company objects in memory.  
+  - Each object is checked against all filter/search conditions.
+  - **Time Complexity:**  
+    - Filtering/searching: **O(n × m)** (n = number of companies, m = number of conditions)
+    - Each company is inspected once per condition (includes nested/related lookups as needed).
 - **Sorting:**  
-  Utilizes a pure Python **merge sort** (O(n log n)) to guarantee stable, predictable performance.  
-  Multi-field sorting is handled by generating a tuple key for each object based on the sort fields, with descending/ascending handled via key inversion — all in one pass.
+  - Uses custom Python **merge sort** for all sorting (never `sorted()`).
+  - Handles multi-field sorts via tuple keys, with all logic in one pass.
+  - **Time Complexity:**  
+    - Sorting: **O(n log n)** (where n is number of companies in the filtered result set)
+    - Each comparison may involve field lookups, but done efficiently per tuple key.
 
 ---
 
 ## ⚠️ Limitations & Assumptions
 
-- **In-memory only:** All filtering and sorting happen in Python, on data loaded into memory. For huge datasets, you may hit memory limits. This approach is chosen **by assignment design** (no `.filter()`/`.order_by()`).
+- **In-memory only:** All filtering, searching, and sorting happen in Python, on data loaded into memory. For huge datasets, you may hit memory limits. This approach is chosen **by assignment design** (no `.filter()`/`.order_by()`).
 - **No parentheses grouping** in filter queries yet (e.g. no support for `A AND (B OR C)`).
 - **No NOT/negation support** in filter expressions.
 - **Assumes all required fields and relations are loaded in the queryset** before filtering/sorting.
-- **API is read-only** (GET/search/filter/sort only).
 - **Performance:** Designed for moderate data volumes. For millions of records, consider an approach using database-backed filtering/sorting.
 
 ---
@@ -91,4 +114,4 @@ A scalable Django REST API for searching, filtering, and sorting company-related
 ## 📝 Example API Queries
 
 ```http
-GET /api/v1/companies/?filter=industry=Tech AND founded_year>=2000&sort=-founded_year
+GET http://127.0.0.1:8000/api/v1/companies/?filter=name=Beta Group OR founded_year=1999&sort=-name&search=country:Ger

@@ -27,7 +27,8 @@ class SearchQuerySet:
         filtered = apply_search(self._data, conditions)
         return SearchQuerySet(filtered)
 
-    def sort(self, sort_fields: list[str]):
+    def sort(self, sort_param: str):
+        sort_fields = [f.strip() for f in sort_param.split(',') if f.strip()] if sort_param else []
         sort_key = create_sort_key(sort_fields)
         sorted_data = merge_sort(self._data, key=sort_key)
         return SearchQuerySet(sorted_data)
