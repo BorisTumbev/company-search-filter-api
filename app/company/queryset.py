@@ -22,10 +22,20 @@ class SearchQuerySet:
     def to_list(self) -> list:
         return self._data
 
+    def chunked(self, chunk_size: int):
+        for i in range(0, len(self._data), chunk_size):
+            yield self._data[i : i + chunk_size]
+
     def search(self, raw_query: str):
         conditions = parse_query(raw_query)
         filtered = apply_search(self._data, conditions)
         return SearchQuerySet(filtered)
+
+    def search_chunked(self, raw_query: str, chunk_size: int = 500):
+        conditions = parse_query(raw_query)
+        for chunk in self.chunked(chunk_size):
+            filtered = apply_search(chunk, conditions)
+            yield SearchQuerySet(filtered)
 
     def sort(self, sort_param: str):
         sort_fields = [f.strip() for f in sort_param.split(',') if f.strip()] if sort_param else []
@@ -36,3 +46,8 @@ class SearchQuerySet:
     def filter(self, raw_query: str):
         filtered = apply_filter(self._data, raw_query)
         return SearchQuerySet(filtered)
+
+    def filter_chunked(self, raw_query: str, chunk_size: int = 500):
+        for chunk in self.chunked(chunk_size):
+            filtered = apply_filter(chunk, raw_query)
+            yield SearchQuerySet(filtered)

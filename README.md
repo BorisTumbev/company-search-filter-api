@@ -58,10 +58,12 @@ A scalable Django REST API for searching, filtering, and sorting company-related
   - Nested and related fields (`details__ceo_name:Alice`)
   - Multiple search criteria combined with AND (all must match)
   - Quoted values for multi-word search (e.g. `name="Beta Group"`)
+  - Supports Fuzzy search with `~` (e.g. `name~Alpha Gr` for fuzzy match)
 - **Implementation:**  
   - Parses the `search` string into conditions using regex and custom parsing logic.
   - Each company is checked for all search conditions using a custom `match()` function.
   - All filtering is done in pure Python — no Django ORM `.filter()`!
+  - Supports chunking transform of large datasets to avoid memory issues.
 
 ---
 
@@ -75,6 +77,7 @@ A scalable Django REST API for searching, filtering, and sorting company-related
 - Quoted and unquoted values supported for multi-word fields.
 - Nested and related fields are supported (`details__size=Large`, `revenue>1000000`).
 - Filtering is implemented fully in Python, with robust utilities for nested field and related object lookup.
+- Support chunking transform of large datasets to avoid memory issues.
 
 ### **Custom Sorting**
 - Query parameter `sort=industry,-founded_year` sorts results by one or more fields.
@@ -98,16 +101,6 @@ A scalable Django REST API for searching, filtering, and sorting company-related
   - **Time Complexity:**  
     - Sorting: **O(n log n)** (where n is number of companies in the filtered result set)
     - Each comparison may involve field lookups, but done efficiently per tuple key.
-
----
-
-## ⚠️ Limitations & Assumptions
-
-- **In-memory only:** All filtering, searching, and sorting happen in Python, on data loaded into memory. For huge datasets, you may hit memory limits. This approach is chosen **by assignment design** (no `.filter()`/`.order_by()`).
-- **No parentheses grouping** in filter queries yet (e.g. no support for `A AND (B OR C)`).
-- **No NOT/negation support** in filter expressions.
-- **Assumes all required fields and relations are loaded in the queryset** before filtering/sorting.
-- **Performance:** Designed for moderate data volumes. For millions of records, consider an approach using database-backed filtering/sorting.
 
 ---
 

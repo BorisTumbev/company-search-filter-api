@@ -3,6 +3,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
 from .models import Company
+from .queryset import SearchQuerySet
 from .serializers import CompanySerializer
 from .utils.common.fields import get_cache_key_from_request
 
@@ -32,9 +33,17 @@ class CompanyApi(GenericAPIView):
         companies = Company.objects.all_with_related()
 
         if raw_search:
-            companies = companies.search(raw_search)
+            # companies = companies.search(raw_search)
+            companies = companies.search_chunked(raw_search)
+            companies = SearchQuerySet(
+                [item for chunk in companies for item in chunk],
+            )
         if filter_param:
-            companies = companies.filter(filter_param)
+            # companies = companies.filter(filter_param)
+            companies = companies.filter_chunked(filter_param)
+            companies = SearchQuerySet(
+                [item for chunk in companies for item in chunk],
+            )
         if sort_param:
             companies = companies.sort(sort_param)
 

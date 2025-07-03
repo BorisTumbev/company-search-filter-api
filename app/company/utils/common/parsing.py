@@ -1,3 +1,4 @@
+import difflib
 import operator
 import re
 from typing import Any
@@ -18,7 +19,7 @@ OPS = {
     'AND': operator.and_,
     'OR': operator.or_,
 }
-FILTER_PATTERN = re.compile(r'(?P<field>\w+)(?P<op>>=|<=|:|>|<|=)(?P<value>.+)')
+FILTER_PATTERN = re.compile(r'(?P<field>\w+)(?P<op>>=|<=|:|>|<|=|~)(?P<value>.+)')
 
 
 def match(obj: Any, cond: dict) -> bool:
@@ -45,6 +46,13 @@ def match(obj: Any, cond: dict) -> bool:
 def _compare(attr: Any, op: str, val: Any) -> bool:
     if attr is None:
         return False
+
+    # Fuzzy string contains
+    if op == '~' and isinstance(attr, str) and isinstance(val, str):
+        # Check if value is "close" to any substring in attr
+        # Token-level matching (or use simple ratio for whole string)
+        ratio = difflib.SequenceMatcher(None, attr.lower(), val.lower()).ratio()
+        return ratio > 0.7  # 0.7 is a reasonable threshold; tune as needed
 
     if op == ':' and isinstance(attr, str) and isinstance(val, str):
         return val.lower() in attr.lower()
